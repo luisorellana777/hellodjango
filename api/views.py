@@ -1,9 +1,10 @@
 import json
-from dataclasses import dataclass
 
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
+
+from .person import PersonInfo
 
 
 @require_GET
@@ -14,22 +15,6 @@ def hello(request):
 @require_GET
 def ping(request):
     return JsonResponse({"status": "ok"})
-
-
-@dataclass
-class PersonInfo:
-    name: str
-    phone_number: str
-
-    @classmethod
-    def from_payload(cls, payload: dict) -> "PersonInfo":
-        name = payload.get("name")
-        phone_number = payload.get("phone_number")
-
-        if not name or not phone_number:
-            raise ValueError("Missing required fields: name, phone_number")
-
-        return cls(name=name, phone_number=phone_number)
 
 
 @csrf_exempt
